@@ -4,7 +4,7 @@
 
 - Updated documentation.
 - Updated dependencies.
-- Added a `NEWS.md` file to track changes to the model.
+- Added a `NEWS.md` file to track changes.
 
 # v1.0.0 (2025-10-08)
 
