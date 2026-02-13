@@ -2,50 +2,43 @@
   {
     "objectID": "index.html#overview",
     "href": "index.html#overview",
-    "title": "Logo Pattern",
+    "title": "A Reproducible Pipeline for Generating CEM’s Logo Pattern",
     "section": "Overview",
-    "text": "Overview\nThis repository provides a fully reproducible pipeline for generating the Center for Metropolitan Studies (CEM) logo pattern, based on its 20-Year Commemorative Logo."
+    "text": "Overview\nThis repository provides a reproducible pipeline for generating the Center for Metropolitan Studies (CEM) logo pattern, based on its 20-Year Commemorative Logo."
   },
   {
     "objectID": "index.html#set-the-environment",
     "href": "index.html#set-the-environment",
-    "title": "Logo Pattern",
+    "title": "A Reproducible Pipeline for Generating CEM’s Logo Pattern",
     "section": "Set the Environment",
-    "text": "Set the Environment\n\nlibrary(brandr)\nlibrary(checkmate)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(grid)\nlibrary(here)\nlibrary(magick)\nlibrary(magrittr)\nlibrary(ragg)\nlibrary(scales)\nlibrary(svglite)\n\n\nCoderounded_square &lt;- function(\n  x,\n  y,\n  side,\n  fill = \"black\",\n  radius = unit(0.1, \"npc\")\n) {\n  assert_number(x)\n  assert_number(y)\n  assert_number(side, lower = 0)\n  assert_string(fill)\n  assert_class(radius, \"unit\")\n\n  half &lt;- side / 2\n  grob &lt;- roundrectGrob(\n    x = unit(0.5, \"npc\"),\n    y = unit(0.5, \"npc\"),\n    width = unit(1, \"npc\"),\n    height = unit(1, \"npc\"),\n    r = radius,\n    gp = gpar(fill = fill, lwd = 0)\n  )\n\n  annotation_custom(\n    grob = grob,\n    xmin = x - half,\n    xmax = x + half,\n    ymin = y - half,\n    ymax = y + half\n  )\n}\n\n\n\nCodeplot_logo_pattern &lt;- function(\n  n = 100,\n  shape_1 = 2, # 2 # hist(rbeta(10000, 2, 50))\n  shape_2 = 50, # 2\n  min_size = 0.25,\n  max_size = 15,\n  step = 0.01,\n  margin = 1,\n  aspect_ratio = c(15, 10)\n) {\n  assert_count(n, positive = TRUE)\n  assert_number(shape_1, lower = 0)\n  assert_number(shape_2, lower = 0)\n  assert_number(max_size, lower = 1)\n  assert_number(min_size, lower = 0, upper = max_size)\n  assert_number(step, lower = 0.0001)\n  assert_number(margin, lower = 0, upper = min(aspect_ratio))\n  assert_numeric(aspect_ratio, len = 2, lower = 1)\n\n  data &lt;- tibble(\n    x = sample(seq(margin, aspect_ratio[1] - margin, by = step), n, TRUE),\n    y = sample(seq(margin, aspect_ratio[2] - margin, by = step), n, TRUE),\n    size =\n      rbeta(n, shape_1, shape_2) |&gt;\n      rescale(to = c(min_size, max_size), from = c(0, 1)),\n    fill = sample(\n      x = get_brand_color(c(\"primary\", \"secondary\", \"tertiary\")),\n      size = n,\n      replace = TRUE\n    )\n  )\n\n  plot &lt;-\n    ggplot() +\n    xlim(0, aspect_ratio[1]) +\n    ylim(0, aspect_ratio[2]) +\n    theme_void() +\n    coord_fixed()\n\n  for (i in split(data, seq_len(nrow(data)))) {\n    plot &lt;-\n      plot +\n      rounded_square(\n        x = i$x,\n        y = i$y,\n        side = i$size,\n        fill = i$fill,\n        r = unit(0.1, \"npc\")\n      )\n  }\n\n  plot\n}"
-  },
-  {
-    "objectID": "index.html#set-variables",
-    "href": "index.html#set-variables",
-    "title": "Logo Pattern",
-    "section": "Set Variables",
-    "text": "Set Variables\n\n\n\n\n\n\nSet the number of squares to be drawn.\n\n\n\n\nn &lt;- 100"
+    "text": "Set the Environment\nLoad Packages\n\nlibrary(brandr)\nlibrary(checkmate)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(grid)\nlibrary(here)\nlibrary(htmltools)\nlibrary(magick)\nlibrary(magrittr)\nlibrary(ragg)\nlibrary(scales)\nlibrary(svglite)\n\nSet Initial Variables\n\n\n\n\n\n\nSet the number of squares to be drawn.\n\n\n\n\nn &lt;- 100\n\nLoad Custom Functions\n\nCoderounded_square &lt;- function(\n  x,\n  y,\n  side,\n  fill = \"black\",\n  radius = unit(0.1, \"npc\")\n) {\n  assert_number(x)\n  assert_number(y)\n  assert_number(side, lower = 0)\n  assert_string(fill)\n  assert_class(radius, \"unit\")\n\n  half &lt;- side / 2\n  grob &lt;- roundrectGrob(\n    x = unit(0.5, \"npc\"),\n    y = unit(0.5, \"npc\"),\n    width = unit(1, \"npc\"),\n    height = unit(1, \"npc\"),\n    r = radius,\n    gp = gpar(fill = fill, lwd = 0)\n  )\n\n  annotation_custom(\n    grob = grob,\n    xmin = x - half,\n    xmax = x + half,\n    ymin = y - half,\n    ymax = y + half\n  )\n}\n\n\n\nCodeplot_logo_pattern &lt;- function(\n  n = 100,\n  shape_1 = 2, # 2 # hist(rbeta(10000, 2, 50))\n  shape_2 = 50, # 2\n  min_size = 0.25,\n  max_size = 15,\n  step = 0.01,\n  margin = 1,\n  aspect_ratio = c(15, 10)\n) {\n  assert_count(n, positive = TRUE)\n  assert_number(shape_1, lower = 0)\n  assert_number(shape_2, lower = 0)\n  assert_number(max_size, lower = 1)\n  assert_number(min_size, lower = 0, upper = max_size)\n  assert_number(step, lower = 0.0001)\n  assert_number(margin, lower = 0, upper = min(aspect_ratio))\n  assert_numeric(aspect_ratio, len = 2, lower = 1)\n\n  data &lt;- tibble(\n    x = sample(seq(margin, aspect_ratio[1] - margin, by = step), n, TRUE),\n    y = sample(seq(margin, aspect_ratio[2] - margin, by = step), n, TRUE),\n    size = rbeta(n, shape_1, shape_2) |&gt;\n      rescale(to = c(min_size, max_size), from = c(0, 1)),\n    fill = sample(\n      x = get_brand_color(c(\"primary\", \"secondary\", \"tertiary\")),\n      size = n,\n      replace = TRUE\n    )\n  )\n\n  plot &lt;-\n    ggplot() +\n    xlim(0, aspect_ratio[1]) +\n    ylim(0, aspect_ratio[2]) +\n    theme_void() +\n    coord_fixed()\n\n  for (i in split(data, seq_len(nrow(data)))) {\n    plot &lt;-\n      plot +\n      rounded_square(\n        x = i$x,\n        y = i$y,\n        side = i$size,\n        fill = i$fill,\n        r = unit(0.1, \"npc\")\n      )\n  }\n\n  plot\n}"
   },
   {
     "objectID": "index.html#plot-patterns",
     "href": "index.html#plot-patterns",
-    "title": "Logo Pattern",
+    "title": "A Reproducible Pipeline for Generating CEM’s Logo Pattern",
     "section": "Plot Patterns",
-    "text": "Plot Patterns\n\n\n\n\n\n\nChange the seed value to get different patterns.\n\n\n\n\nseeds &lt;- c(1, 33, 9422)\n\n\nCodefor (i in seeds) {\n  set.seed(i)\n\n  i_plot &lt;- plot_logo_pattern(n)\n\n  ggsave(\n    filename = here(\"patterns\", paste0(\"logo-pattern-\", i, \".svg\")),\n    plot = i_plot,\n    width = 15,\n    height = 10,\n    units = \"cm\"\n  )\n\n  print(i_plot)\n}"
+    "text": "Plot Patterns\n\n\n\n\n\n\nChange the seed value to get different patterns.\n\n\n\n\nseeds &lt;- c(1, 33, 9422)\n\n\nCodefor (i in seeds) {\n  set.seed(i)\n\n  i_plot &lt;- plot_logo_pattern(n)\n\n  ggsave(\n    filename = here(\n      \"patterns\",\n      paste0(\"logo-pattern-\", i, \".svg\")\n    ),\n    plot = i_plot,\n    width = 15,\n    height = 10,\n    units = \"cm\"\n  )\n\n  print(i_plot)\n}"
   },
   {
     "objectID": "index.html#animate-pattern",
     "href": "index.html#animate-pattern",
-    "title": "Logo Pattern",
+    "title": "A Reproducible Pipeline for Generating CEM’s Logo Pattern",
     "section": "Animate Pattern",
-    "text": "Animate Pattern\n\nCodefiles &lt;- character()\n\nfor (i in seeds) {\n  set.seed(i)\n\n  i_plot &lt;- plot_logo_pattern(n)\n  i_file &lt;- tempfile(fileext = \".png\")\n\n  ggsave(\n    filename = i_file,\n    plot = i_plot,\n    width = 15,\n    height = 10,\n    units = \"cm\",\n    dpi = 150,\n    bg = \"white\"\n  )\n\n  files &lt;- files |&gt; append(i_file)\n}\n\n\n\nCodeanimation &lt;-\n  files |&gt;\n  lapply(image_read) |&gt;\n  image_join() |&gt;\n  image_animate(fps = 1)\n\n\n\nCodeanimation |&gt; image_write(here(\"images\", \"logo-pattern-animation.gif\"))\n\n\n\nCodeanimation"
+    "text": "Animate Pattern\n\nCodefiles &lt;- character()\n\nfor (i in seeds) {\n  set.seed(i)\n\n  i_plot &lt;- plot_logo_pattern(n)\n  i_file &lt;- tempfile(fileext = \".png\")\n\n  ggsave(\n    filename = i_file,\n    plot = i_plot,\n    width = 15,\n    height = 10,\n    units = \"cm\",\n    dpi = 150,\n    bg = \"white\"\n  )\n\n  files &lt;- files |&gt; append(i_file)\n}\n\n\n\nCodeanimation &lt;-\n  files |&gt;\n  lapply(image_read) |&gt;\n  image_join() |&gt;\n  image_animate(fps = 1)\n\n\n\nCodeanimation |&gt;\n  image_write(\n    here(\"images\", \"logo-pattern-animation.gif\")\n  )\n\n\n\nCodeanimation"
   },
   {
     "objectID": "index.html#license",
     "href": "index.html#license",
-    "title": "Logo Pattern",
+    "title": "A Reproducible Pipeline for Generating CEM’s Logo Pattern",
     "section": "License",
-    "text": "License\n\n \n\nThe code in this report is licensed under the GNU General Public License Version 3, while the report is available under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.\nCopyright (C) 2025 Daniel Vartanian\n\nThe code in this report is free software: you can redistribute it and/or\nmodify it under the terms of the GNU General Public License as published by the\nFree Software Foundation, either version 3 of the License, or (at your option)\nany later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY\nWARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with\nthis program. If not, see &lt;https://www.gnu.org/licenses/&gt;."
+    "text": "License\n\n \n\nThe code in this report is licensed under the GNU General Public License Version 3, while the report is available under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license.\nCopyright (C) 2026 Center for Metropolitan Studies\n\nThe code in this report is free software: you can redistribute it and/or\nmodify it under the terms of the GNU General Public License as published by the\nFree Software Foundation, either version 3 of the License, or (at your option)\nany later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY\nWARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with\nthis program. If not, see &lt;https://www.gnu.org/licenses/&gt;."
   },
   {
     "objectID": "index.html#acknowledgments",
     "href": "index.html#acknowledgments",
-    "title": "Logo Pattern",
+    "title": "A Reproducible Pipeline for Generating CEM’s Logo Pattern",
     "section": "Acknowledgments",
-    "text": "Acknowledgments\n\n\n\n\n\nThis work was developed with support from the Center for Metropolitan Studies (CEM) based at the School of Philosophy, Letters and Human Sciences (FFLCH) of the University of São Paulo (USP) and at the Brazilian Center for Analysis and Planning (CEBRAP).\n\n\n\n\n\n\nThis study was financed, in part, by the São Paulo Research Foundation (FAPESP), Brazil. Process Number 2025/17879-2."
+    "text": "Acknowledgments\n\n\n\n\n\nThis work was developed with support from the Center for Metropolitan Studies (CEM) based at the School of Philosophy, Letters and Human Sciences (FFLCH) of the University of São Paulo (USP) and at the Brazilian Center for Analysis and Planning (CEBRAP).\n\n\n\n\n\n\nThis work was financed, in part, by the São Paulo Research Foundation (FAPESP), Brazil. Process Number 2025/17879-2."
   }
 ]

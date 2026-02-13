@@ -19,6 +19,7 @@
     "titleBar.inactiveForeground": "#e7e7e799"
   },
   "peacock.color": "014691",
+  "cSpell.language": "en,pt_BR",
   "cSpell.words": [
     "acessosan",
     "asis",
@@ -34,8 +35,10 @@
     "dplyr",
     "fapesp",
     "FFLCH",
+    "fileext",
     "ggplot",
     "ggsave",
+    "github",
     "gpar",
     "grob",
     "htmltools",
@@ -45,6 +48,7 @@
     "magick",
     "magrittr",
     "nrow",
+    "orcid",
     "Poli",
     "quartor",
     "ragg",
@@ -64,6 +68,10 @@
     "tibble",
     "Vartanian",
     "xlim",
-    "ylim"
+    "xmax",
+    "xmin",
+    "ylim",
+    "ymax",
+    "ymin"
   ]
 }

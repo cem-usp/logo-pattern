@@ -4,18 +4,19 @@
 
 library(here)
 
-source(here("R", "_setup.R"))
+here("R", ".setup.R") |> source()
 ```
 
 <!-- badges: start -->
 [![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-bd0000.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Contributor Covenant 3.0 code of conduct badge](https://img.shields.io/badge/Contributor%20Covenant-3.0-4baaaa.svg)](https://www.contributor-covenant.org/version/3/0/code_of_conduct/)
 <!-- badges: end -->
 
 ## Overview
 
-This repository provides a fully reproducible pipeline for generating the Center for Metropolitan Studies ([CEM](https://centrodametropole.fflch.usp.br/)) logo pattern, based on its 20-Year Commemorative Logo.
+This repository provides a reproducible pipeline for generating the Center for Metropolitan Studies ([CEM](https://centrodametropole.fflch.usp.br/)) logo pattern, based on its 20-Year Commemorative Logo.
 
 ::: {style="text-align: center; margin: 2em;"}
 ![](images/logo-cem-20.png)
@@ -23,7 +24,10 @@ This repository provides a fully reproducible pipeline for generating the Center
 
 ## Set the Environment
 
+### Load Packages
+
 ```{r}
+#| label: Set the Environment
 #| output: false
 
 library(brandr)
@@ -32,12 +36,25 @@ library(dplyr)
 library(ggplot2)
 library(grid)
 library(here)
+library(htmltools)
 library(magick)
 library(magrittr)
 library(ragg)
 library(scales)
 library(svglite)
 ```
+
+### Set Initial Variables
+
+::: {.callout-note}
+Set the number of squares to be drawn.
+:::
+
+```{r}
+n <- 100
+```
+
+### Load Custom Functions
 
 ```{r}
 #| output: false
@@ -102,8 +119,7 @@ plot_logo_pattern <- function(
   data <- tibble(
     x = sample(seq(margin, aspect_ratio[1] - margin, by = step), n, TRUE),
     y = sample(seq(margin, aspect_ratio[2] - margin, by = step), n, TRUE),
-    size =
-      rbeta(n, shape_1, shape_2) |>
+    size = rbeta(n, shape_1, shape_2) |>
       rescale(to = c(min_size, max_size), from = c(0, 1)),
     fill = sample(
       x = get_brand_color(c("primary", "secondary", "tertiary")),
@@ -135,16 +151,6 @@ plot_logo_pattern <- function(
 }
 ```
 
-## Set Variables
-
-::: {.callout-note}
-Set the number of squares to be drawn.
-:::
-
-```{r}
-n <- 100
-```
-
 ## Plot Patterns
 
 ::: {.callout-note}
@@ -152,6 +158,8 @@ Change the seed value to get different patterns.
 :::
 
 ```{r}
+#| label: Plot Patterns
+
 seeds <- c(1, 33, 9422)
 ```
 
@@ -165,7 +173,10 @@ for (i in seeds) {
   i_plot <- plot_logo_pattern(n)
 
   ggsave(
-    filename = here("patterns", paste0("logo-pattern-", i, ".svg")),
+    filename = here(
+      "patterns",
+      paste0("logo-pattern-", i, ".svg")
+    ),
     plot = i_plot,
     width = 15,
     height = 10,
@@ -188,7 +199,10 @@ for (i in seeds) {
   i_plot <- plot_logo_pattern(n)
 
   ggsave(
-    filename = here("patterns", paste0("logo-pattern-", i, ".svg")),
+    filename = here(
+      "patterns",
+      paste0("logo-pattern-", i, ".svg")
+    ),
     plot = i_plot,
     width = 15,
     height = 10,
@@ -200,6 +214,7 @@ for (i in seeds) {
 ## Animate Pattern
 
 ```{r}
+#| label: Animate Pattern
 #| code-fold: true
 
 files <- character()
@@ -237,7 +252,10 @@ animation <-
 ```{r}
 #| code-fold: true
 
-animation |> image_write(here("images", "logo-pattern-animation.gif"))
+animation |>
+  image_write(
+    here("images", "logo-pattern-animation.gif")
+  )
 ```
 
 ```{r}
@@ -254,10 +272,10 @@ animation
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 :::
 
-The code in this report is licensed under the [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0), while the report is available under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+The code in this report is licensed under the [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0), while the report is available under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
 
 ``` text
-Copyright (C) 2025 Daniel Vartanian
+Copyright (C) 2026 Center for Metropolitan Studies
 
 The code in this report is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published by the
@@ -275,24 +293,23 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 ## Acknowledgments
 
 ```{r, results='asis'}
+#| eval: true
 #| echo: false
-
-library(htmltools)
 
 blocks <- list(
   list(
     logo_link = "https://centrodametropole.fflch.usp.br",
-    logo_src = "images/cem-icon.svg",
+    logo_src = "images/cem-logo.svg",
     logo_alt = "CEM Logo",
-    logo_width = 190,
+    logo_max_width = 190,
     text = 'This work was developed with support from the Center for Metropolitan Studies (<a href="https://centrodametropole.fflch.usp.br">CEM</a>) based at the School of Philosophy, Letters and Human Sciences (<a href="https://www.fflch.usp.br/">FFLCH</a>) of the University of São Paulo (<a href="https://usp.br">USP</a>) and at the Brazilian Center for Analysis and Planning (<a href="https://cebrap.org.br/">CEBRAP</a>).'
   ),
   list(
-    logo_link = "https://fapesp.br/",
+    logo_link = "https://fapesp.br",
     logo_src = "images/fapesp-logo.svg",
     logo_alt = "FAPESP Logo",
-    logo_width = 160,
-    text = 'This study was financed, in part, by the São Paulo Research Foundation (<a href="https://fapesp.br/">FAPESP</a>), Brazil. Process Number <a href="https://bv.fapesp.br/en/bolsas/231507/geospatial-data-science-applied-to-food-policies/">2025/17879-2</a>.'
+    logo_max_width = 160,
+    text = 'This work was financed, in part, by the São Paulo Research Foundation (<a href="https://fapesp.br/">FAPESP</a>), Brazil. Process Number <a href="https://bv.fapesp.br/en/bolsas/231507/geospatial-data-science-applied-to-food-policies/">2025/17879-2</a>.'
   )
 )
 
@@ -302,7 +319,7 @@ blocks |>
       div(
         style = paste0(
           "display: flex; ",
-          "align-items: flex-start; ",
+          "align-items: center; ",
           "margin-bottom: 2em;"
         ),
         div(
@@ -318,7 +335,9 @@ blocks |>
               src = x$logo_src,
               alt = x$logo_alt,
               style = paste0(
-                "max-width: ", x$logo_width, "px; ",
+                "max-width: ",
+                x$logo_max_width,
+                "px; ",
                 "width: 100%; ",
                 "height: auto;"
               )

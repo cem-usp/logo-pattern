@@ -1,21 +1,20 @@
 editor: source
 
 execute:
-  cache: false # "Danger Will Robinson!"
+  cache: false # "Danger, Will Robinson!"
   freeze: false # If you plan to use it, remember to disable it afterward!
 
 project:
   type: website
   output-dir: docs
   render: [index.qmd]
-  post-render: "R/_post-render.R"
+  post-render: "R/.post-render.R"
 
-title: Logo Pattern
+title: A Reproducible Pipeline for Generating CEM's Logo Pattern
 author: "Daniel Vartanian"
 keyword: >
-  Pipelines, Data Visualization, Graphic Design, Design Automation,
-  Programmatic Graphics, Logo, Center for Metropolitan Studies, CEM,
-  University of São Paulo, USP
+  Brand Identity, Branding, Design, Graphic Design, Design Automation,
+  Programmatic Graphics, Pipelines, rstats
 date: today
 date-format: long
 
